@@ -2,7 +2,7 @@
 
 var pokemonsTypestoProcess;
 var EvolutionChainSection = document.getElementById('EvolutionChainSection');
-// console.log(document.getElementById('EvolutionChainSection'));
+var preloader = document.getElementById("preloader");
 
 // splideRecentSearch
 if (window.innerWidth <= 768) {
@@ -225,8 +225,6 @@ function getpokemondata(pokemonStart,pokemonEnd)
     })
     .catch(error => console.error('On get pokemon error', error))
     .then(() => { 
-      
-
     })
 }
 
@@ -235,6 +233,7 @@ function getonepokemondata(pokemonName)
 {
     document.getElementById('collapseExample2').classList.remove("show");
     document.getElementById('collapseExample1').classList.remove("show");
+
     let pokemonSectionResult = document.getElementById('firstCard');
     let RAPIDAPI_API_URL = 'https://pokeapi.co/api/v2/pokemon/'+pokemonName;
     let pokemontypes = document.getElementById('pokemonTypes');
@@ -476,6 +475,8 @@ function getonepokemondata(pokemonName)
             }
         };
 
+        preloader.classList.add('animate__animated','animate__fadeIn','animate__delay-3s');
+
         axios.get(response.data.species.url)
         .then(response => {
             // console.log(response.data.evolution_chain.url);
@@ -558,6 +559,7 @@ function getonepokemondata(pokemonName)
         new Promise((resolve) => {
             loaderbackground.classList.add('animate__animated'); 
             loaderbackground.classList.add('animate__fadeOut');
+            
             setTimeout(() => resolve(), 1000); // Delay execution by 3 seconds
         }).then(() => {
             loaderbackground.style.display = "none";
@@ -568,8 +570,6 @@ function getonepokemondata(pokemonName)
         //         searchPlaceholder: 'Search Move'
         //     }
         // });
-
-
     })
 }
 

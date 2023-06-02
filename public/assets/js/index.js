@@ -1,6 +1,8 @@
 //ILOVEXUXA
 
 var loaderbackground = document.getElementById("preloader-background");
+var preloader = document.getElementById("preloader");
+getpokemondata(0,20)
 
 // initiate splide
 if (window.innerWidth <= 768) {
@@ -34,9 +36,6 @@ else{
 }
 
 
-
-//284445
-
 // window.addEventListener("load", function(){
     
 // });
@@ -58,19 +57,15 @@ function getpokemondata(pokemonStart,pokemonEnd)
 
         pokemons.forEach((pokemon) => {
 
-            console.log(pokemon.name);
-
-
-
             let newImg = document.createElement('img');
             // newImg.classList.add('col-xs-1'); 
             newImg.setAttribute('src', 'https://img.pokemondb.net/sprites/brilliant-diamond-shining-pearl/normal/1x/'+pokemon.name+'.png');
             // newImg.setAttribute('data-mdb-toggle', 'tooltip');
             newImg.setAttribute('title', pokemon.name);
-            newImg.className = 'hvr-float';
+            newImg.setAttribute('onclick', "showLoader()");
 
             let newAnchor = document.createElement('a');
-            newAnchor.setAttribute('href', 'pokedex.html?pokemonName='+pokemon.name+'#pokedexSection');
+            newAnchor.setAttribute('href', '/pokedex?pokemonName='+pokemon.name);
 
             newAnchor.appendChild(newImg);
 
@@ -104,9 +99,6 @@ function getpokemondata(pokemonStart,pokemonEnd)
     })
 }
 
-
-getpokemondata(0,20)
-
 function dipatapos(){
     Swal.fire({
         icon: 'error',
@@ -116,20 +108,3 @@ function dipatapos(){
     })
 }
 
-var scrollButton = document.getElementById("scrollButton");
-
-window.addEventListener("scroll", function() {
-  if (window.pageYOffset > 100) {
-    scrollButton.style.display = "block";
-  } else {
-    scrollButton.style.display = "none";
-  }
-});
-
-scrollButton.addEventListener("click", function() {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    });
-});
-  
