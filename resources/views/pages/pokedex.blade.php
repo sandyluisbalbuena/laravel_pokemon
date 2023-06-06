@@ -11,6 +11,7 @@
 @endsection   
 
 @section('content')
+
 	<div class="container">
 		<section class="row mt-5">
 		</section>
@@ -19,6 +20,7 @@
 			<div class="col-12 col-lg-3 mt-2">
 				<div style="height: 99.7%;">
 					<div class="card my-1 animate__animated animate__fadeInLeft" style="border-radius: 5px; position: -webkit-sticky; position: sticky; top: 70px;" id="firstCard">
+							
 						<div id="backgroundColor" style="border-radius: 5px;" class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
 							<!-- <img id="pokemonImage" class="animate__animated animate__fadeIn animate__delay-1s p-3" src="https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/<?php echo $pokemonData['pokemonId']?>.png" width="100%" height="100%" class="img-fluid"/> -->
 							<img id="pokemonImage" class="animate__animated animate__fadeIn animate__delay-1s p-3" src="https://img.pokemondb.net/artwork/avif/<?php echo strtolower($pokemonData['pokemonName'])?>.avif" width="100%" height="100%" class="img-fluid"/>
@@ -27,15 +29,22 @@
 							</a>
 						</div>
 						<div class="card-body text-center">
-							<h5 id="cardTitlePokemonName" class="card-title bg-dark text-white rounded p-2 m-1">{{$pokemonData['pokemonName']}}</h5>
+							<h5 id="cardTitlePokemonName" class="card-title p-2 m-1">{{$pokemonData['pokemonName']}}</h5>
+							@if(auth()->check())
+								<button onclick="createThreadMon()" class="mt-3 btn btn-dark" style="width:100%;" data-mdb-toggle="modal" data-mdb-target="#postThread">
+									<i class="far fa-pen-to-square me-1"></i>
+									Create a thread
+								</button>
+							@endif
 							<hr/>
 							<p class="card-text" id="pokemonDescription"></p>
 							<hr/>
 							<div id="pokemonTypes">
 								<?php foreach ($pokemonData['pokemonTypes'] as $type): ?>
-									<img class="mx-1" height="25px" onclick="dipatapos()" src="assets/images/pokemonTypes/<?php echo $type[0]?>text.png" alt="">
+									<img class="mx-1" height="25px" onclick="dipatapos()" src="/assets/images/pokemonTypes/<?php echo $type[0]?>text.png" alt="">
 								<?php endforeach; ?>
 							</div>
+							
 						</div>
 					</div>
 				</div>
@@ -243,7 +252,7 @@
 	
 	<!-- customJS -->
 	<!-- <script src="{{asset('assets/js/pokedex.js')}}"></script> -->
-	<script src="{{asset('assets/js/pokedex2.js')}}"></script>
+	<script src="{{asset('/assets/js/pokedex2.js')}}"></script>
 
 	<!-- triggers -->
 	{{-- var flavor_text_entry = @json($pokemonData['pokemonFlavor_text_entries']);--}}

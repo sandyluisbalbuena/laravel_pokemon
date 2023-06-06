@@ -2,6 +2,7 @@
 @extends('template.layout')
 
 @section('content')
+
 	<div class="p-5 text-center bg-image hero" style="background-image: url('assets/images/hero/hero.jpg'); height: 80vh; top:0;">
 		<div class="mask" style="background-color: rgba(0, 0, 0, 0.6);">
 			<div class="d-flex justify-content-center align-items-center h-100">

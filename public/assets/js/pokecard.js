@@ -7,6 +7,7 @@ var table2 = $('#myTable2').DataTable({
 });
 
 let pokemonName;
+let forThread;
 
 var cardId;
 
@@ -15,7 +16,11 @@ var urlParams = new URLSearchParams(window.location.search);
 if (urlParams.has('id')) {
     cardId = urlParams.get('id');
 
-    axios.get(`https://api.pokemontcg.io/v1/cards?id=`+cardId)
+    getDataOneCard(cardId);
+}
+
+function getDataOneCard(Id){
+    axios.get(`https://api.pokemontcg.io/v1/cards?id=`+Id)
     .then(response => {
         // console.log(response.data.cards);
         forCardView(response.data.cards[0]);
@@ -41,17 +46,11 @@ function handleKeyPress(event) {
     }
 }
 
-
-// hideResult();
-
-
-
-
 let filterbtns = document.getElementById('filterbtns');
-
 
 if(cardId == undefined){
     getonecard();
+    getDataOneCard('swsh45sv-SV107');
 }
 
 function getonecard(){
@@ -119,7 +118,6 @@ function getonecard(){
                     
                 }
             }
-
 
 
 
@@ -238,6 +236,8 @@ function forCardView(cardData){
 
     console.log(cardData);
 
+    forThread = cardData;
+
 
     let myTable2 = document.getElementById("myTable2");
     let tbody2 = myTable2.getElementsByTagName("tbody")[0];
@@ -290,24 +290,24 @@ function forCardView(cardData){
     }
 
     if('types' in cardData){
-        cardType.innerHTML = '<img class="rounded" width="40px" src="assets/images/pokemonCardTypes/'+cardData.types[0]+'.png" />';
+        cardType.innerHTML = '<img class="rounded" width="40px" src="/assets/images/pokemonCardTypes/'+cardData.types[0]+'.png" />';
     }
 
     if('weaknesses' in cardData){
         cardData.weaknesses.forEach(weakness => {
-            cardWeakness.innerHTML += '<span class="d-flex"><img class="rounded" width="40px" src="assets/images/pokemonCardTypes/'+weakness.type+'.png" /><p>&nbsp;&nbsp;'+weakness.value+'</p></span><br/>';
+            cardWeakness.innerHTML += '<span class="d-flex"><img class="rounded" width="40px" src="/assets/images/pokemonCardTypes/'+weakness.type+'.png" /><p>&nbsp;&nbsp;'+weakness.value+'</p></span><br/>';
         });
     }
 
     if('retreatCost' in cardData){
         cardData.retreatCost.forEach(retreat => {
-            cardRetreatCost.innerHTML += '<img class="rounded" width="40px" src="assets/images/pokemonCardTypes/'+retreat+'.png" />';
+            cardRetreatCost.innerHTML += '<img class="rounded" width="40px" src="/assets/images/pokemonCardTypes/'+retreat+'.png" />';
         });
     }
 
     if('resistances' in cardData){
         cardData.resistances.forEach(resistance => {
-            cardResistance.innerHTML += '<span class="d-flex"><img class="rounded" width="40px" src="assets/images/pokemonCardTypes/'+resistance.type+'.png" /><p>&nbsp;&nbsp;'+resistance.value+'</p></span><br/>';
+            cardResistance.innerHTML += '<span class="d-flex"><img class="rounded" width="40px" src="/assets/images/pokemonCardTypes/'+resistance.type+'.png" /><p>&nbsp;&nbsp;'+resistance.value+'</p></span><br/>';
         });
     }
 
@@ -320,7 +320,7 @@ function forCardView(cardData){
             let cost="";
             attack.cost.forEach(ct => {
                 if(ct != "Free"){
-                    cost += '<img width="35px" class="me-1" src="assets/images/pokemonCardTypes/'+ct+'.png"/>';
+                    cost += '<img width="35px" class="me-1" src="/assets/images/pokemonCardTypes/'+ct+'.png"/>';
                 }
             });
             attackName = '<button style="width:100%;" onclick="attackDescription(`'+attack.text+'`)" class="btn btn-dark bg-dark">'+attack.name+'</button>';
@@ -472,5 +472,80 @@ function showResult() {
 function hideResult() {
     // document.getElementById('myresult').setAttribute("visible", "false");
     document.getElementById('myresult').style.visibility = "hidden";
+}
+
+function stringToSlug(string) {
+    return string
+      .toLowerCase() // convert to lowercase
+      .replace(/\s+/g, '-') // replace spaces with hyphens
+      .replace(/[^\w-]+/g, '') // remove non-word characters
+      .replace(/--+/g, '-') // replace multiple consecutive hyphens with a single hyphen
+      .replace(/^-+|-+$/g, ''); // remove hyphens from the beginning and end
+}
+
+formPostThread.addEventListener('submit', (e)=>{
+	e.preventDefault();
+	
+	let formData = {
+		'category' : category.value,
+		'title' : title.value,
+		'content' : tinymce.activeEditor.getContent(),
+		// 'content' : summernote.value,
+	};
+
+    let slug = stringToSlug(title.value);
+
+
+	axios.post('/pokeforum', formData)
+    .then(response => {
+
+		if(response.data.success){
+			
+			$('#postThread').modal('hide');
+
+			Swal.fire({
+				icon: 'success',
+				title: 'Thread Created successfully!',
+			})
+
+            setTimeout(() => {
+                window.location.href = "/pokeforum/"+slug;
+            }, 1000);
+		
+		}else{
+			document.getElementById('categoryError').textContent = response.data.message.category;
+			document.getElementById('titleError').innerHTML = response.data.message.title;													
+			document.getElementById('contentError').innerHTML = response.data.message.content;
+			Swal.fire({
+				icon: 'error',
+				title: 'Something went wrong!',
+			})
+		}
+    })
+    .catch(function (error){
+		console.error(error);
+	})
+    .then(() => { 
+    })
+})
+
+function createThreadCard(){
+
+    document.getElementById('category').value = 2;
+    document.getElementById('category').setAttribute('disabled', '');
+
+    // console.log(forThread);
+    // tinymce.setContent('');
+    tinymce.execCommand('setContent', false, ``);
+
+    
+
+    tinymce.execCommand('mceInsertContent', false, `<img  class="rounded cardForThread" src="`+forThread.imageUrlHiRes+`">
+                                                        <h6>
+                                                        `+
+                                                        forThread.name
+                                                        +` 
+                                                        </h6>
+                                                    `);
 }
 

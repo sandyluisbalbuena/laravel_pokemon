@@ -9,7 +9,13 @@ use Illuminate\Support\Str;
 class Thread extends Model
 {
     use HasFactory;
-    protected $fillable = ['title', 'slug', 'category_id', 'content', 'user_id'];
+    protected $fillable = [
+        'title', 
+        'slug', 
+        'category_id', 
+        'content', 
+        'user_id'
+    ];
 
     public function discussion()
     {
@@ -24,6 +30,11 @@ class Thread extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function reactions()
+    {
+        return $this->hasMany(Reaction::class);
     }
 
     public function save(array $options = [])

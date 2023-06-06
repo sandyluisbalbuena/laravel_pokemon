@@ -11,6 +11,7 @@
 @endsection   
 
 @section('content')
+
 	<div class="container">
 		<section class="row mt-5">
 		</section>
@@ -53,6 +54,16 @@
 								<div class="col-12 col-lg-3">
 									<div id="cardImage"  onmouseover="showResult()" onmouseout="hideResult()"  class="img-zoom-container">
 									</div>
+
+									@if(auth()->check())
+
+									<button onclick="createThreadCard()" class="mt-3 btn btn-dark" style="width:100%;" data-mdb-toggle="modal" data-mdb-target="#postThread">
+										<i class="far fa-pen-to-square me-1"></i>
+										Create a thread
+									</button>
+
+									@endif
+
 								</div>
 								<div class="col-12 col-lg-9">
 									<div class="row">

@@ -4,12 +4,13 @@ var loaderbackground = document.getElementById("preloader-background");
 var preloader = document.getElementById("preloader");
 var table = new DataTable('#myTable');
 
-window.addEventListener("load", function(){
+let forMonDescription;
+let forMonName;
 
+window.addEventListener("load", function(){
 	new Promise((resolve) => {
 		loaderbackground.classList.add('animate__animated', 'animate__fadeOut');
-		
-		setTimeout(() => resolve(), 1000); // Delay execution by 3 seconds
+		setTimeout(() => resolve(), 1000); 
 	}).then(() => {
 		loaderbackground.style.display = "none";
 	});
@@ -59,7 +60,7 @@ function pokemonSearch(pokemonNameName){
 			setTimeout(() => resolve(), 2000);
 		}).then(() => {
 			pokemonImage.classList.remove('animate__fadeOut');
-			pokemonImage.setAttribute('src','assets/images/misc/loader.gif');
+			pokemonImage.setAttribute('src','/assets/images/misc/loader.gif');
 			pokemonImage.classList.add('animate__animated', 'animate__fadeIn');
 		});
 		setTimeout(() => resolve(), 3000);
@@ -136,6 +137,7 @@ function pokemonSearch(pokemonNameName){
 
 function pagboboUser(pokemonName){
 
+
 	axios.get('/getpokemonnames')
 	.then(response2 => {
 
@@ -186,6 +188,7 @@ function flavor_text(specieUrl){
 
 		response.data.flavor_text_entries.forEach(description => {
 			if(description.language.name == 'en'){
+				forMonDescription = description.flavor_text;
 				document.getElementById('pokemonDescription').textContent = description.flavor_text;
 			}
 
@@ -234,7 +237,7 @@ function pokemon_moves(moves_data){
 			$(newRow).addClass('animate__fadeInUp');
 
             $(newRow).find('td:eq(0)').html('<button onclick="moveDescription(`'+moveDescriptiontobeuse+'`)" class="btn" style="width:100%;">' + newRowData[0].toUpperCase() + '</button>');
-            $(newRow).find('td:eq(5)').html('<img src="assets/images/pokemonTypes/'+newRowData[5]+'text.png" style="width:100%;">');
+            $(newRow).find('td:eq(5)').html('<img src="/assets/images/pokemonTypes/'+newRowData[5]+'text.png" style="width:100%;">');
         })
         .catch(error => console.error('On get one pokemon error', error))
         .then(() => { 
@@ -574,7 +577,7 @@ function pokemon_types(pokemonTypes){
 	let pokemonTypes2 = document.getElementById('pokemonTypes');
 	pokemonTypes2.innerHTML="";
 	pokemonTypes.forEach(type => {
-		pokemonTypes2.innerHTML += '<img class="animate__animated animate__fadeInUp m-1" height="25px" onclick="dipatapos()" src="assets/images/pokemonTypes/'+type[0]+'text.png" alt="">';
+		pokemonTypes2.innerHTML += '<img class="animate__animated animate__fadeInUp m-1" height="25px" onclick="dipatapos()" src="/assets/images/pokemonTypes/'+type[0]+'text.png" alt="">';
 	});
 }
 
@@ -585,7 +588,7 @@ function pokemon_advantage(pokemonAdvantageData){
 	console.log(pokemonAdvantage);	
 
 	pokemonAdvantageData.forEach(adv => {
-		pokemonAdvantage.innerHTML += '<img class="animate__animated animate__fadeInUp m-1" height="25px" onclick="dipatapos()" src="assets/images/pokemonTypes/'+adv+'text.png" alt="">';
+		pokemonAdvantage.innerHTML += '<img class="animate__animated animate__fadeInUp m-1" height="25px" onclick="dipatapos()" src="/assets/images/pokemonTypes/'+adv+'text.png" alt="">';
 	});
 }
 
@@ -593,7 +596,7 @@ function pokemon_disadvantage(pokemonDisAdvantageData){
 	let pokemonDisadvantage = document.getElementById('pokemonDisadvantage');
 	pokemonDisadvantage.innerHTML="";
 	pokemonDisAdvantageData.forEach(dadv => {
-		pokemonDisadvantage.innerHTML += '<img class="animate__animated animate__fadeInUp m-1" height="25px" onclick="dipatapos()" src="assets/images/pokemonTypes/'+dadv+'text.png" alt="">';
+		pokemonDisadvantage.innerHTML += '<img class="animate__animated animate__fadeInUp m-1" height="25px" onclick="dipatapos()" src="/assets/images/pokemonTypes/'+dadv+'text.png" alt="">';
 	});
 }
 
@@ -614,7 +617,7 @@ function get_pokemon_advantages(pokemonTypes){
 
 			response.data.damage_relations.double_damage_to.forEach(advantage => {
 				adv.push(advantage.name);
-				pokemonAdvantagesSection.innerHTML += '<img class="m-1" height="25px" onclick="dipatapos()" src="assets/images/pokemonTypes/'+advantage.name+'text.png" alt="">';
+				pokemonAdvantagesSection.innerHTML += '<img class="m-1" height="25px" onclick="dipatapos()" src="/assets/images/pokemonTypes/'+advantage.name+'text.png" alt="">';
 			});
 
 		})
@@ -642,7 +645,7 @@ function get_pokemon_disadvantages(pokemonTypes){
 		axios.get(type[1])
 		.then(response => {
 			response.data.damage_relations.double_damage_from.forEach(disadvantage => {
-				pokemonAdvantagesSection.innerHTML += '<img class="m-1" height="25px" onclick="dipatapos()" src="assets/images/pokemonTypes/'+disadvantage.name+'text.png" alt="">';
+				pokemonAdvantagesSection.innerHTML += '<img class="m-1" height="25px" onclick="dipatapos()" src="/assets/images/pokemonTypes/'+disadvantage.name+'text.png" alt="">';
 			});
 		})
 		.catch(error => console.error('On get one pokemon error', error))
@@ -677,6 +680,9 @@ function get_pokemon_species(specieUrl){
 }	
 
 function get_pokemon_cards(pokemonName){
+
+	forMonName = pokemonName;
+
 	let cardSection = document.getElementById('splideCardsId');
 
 	cardSection.innerHTML="";
@@ -798,4 +804,81 @@ function calculateLevenshteinDistance(a, b) {
 function redirectToPokeCard(cardId) {
 	console.log(cardId);
 	window.location.href = "/pokecard?id=" + cardId;
+}
+
+function stringToSlug(string) {
+    return string
+      .toLowerCase() // convert to lowercase
+      .replace(/\s+/g, '-') // replace spaces with hyphens
+      .replace(/[^\w-]+/g, '') // remove non-word characters
+      .replace(/--+/g, '-') // replace multiple consecutive hyphens with a single hyphen
+      .replace(/^-+|-+$/g, ''); // remove hyphens from the beginning and end
+}
+
+formPostThread.addEventListener('submit', (e)=>{
+	e.preventDefault();
+	
+	let formData = {
+		'category' : category.value,
+		'title' : title.value,
+		'content' : tinymce.activeEditor.getContent(),
+		// 'content' : summernote.value,
+	};
+
+    let slug = stringToSlug(title.value);
+
+
+	axios.post('/pokeforum', formData)
+    .then(response => {
+
+		if(response.data.success){
+			
+			$('#postThread').modal('hide');
+
+			Swal.fire({
+				icon: 'success',
+				title: 'Thread Created successfully!',
+			})
+
+            setTimeout(() => {
+                window.location.href = "/pokeforum/"+slug;
+            }, 1000);
+		
+		}else{
+			document.getElementById('categoryError').textContent = response.data.message.category;
+			document.getElementById('titleError').innerHTML = response.data.message.title;													
+			document.getElementById('contentError').innerHTML = response.data.message.content;
+			Swal.fire({
+				icon: 'error',
+				title: 'Something went wrong!',
+			})
+		}
+    })
+    .catch(function (error){
+		console.error(error);
+	})
+    .then(() => { 
+    })
+})
+
+function createThreadMon() {
+	document.getElementById('category').value = 1;
+    document.getElementById('category').setAttribute('disabled', '');
+
+    tinymce.execCommand('setContent', false, ``);
+
+    
+
+    tinymce.execCommand('mceInsertContent', false, `<img  class="rounded cardForThread" src="https://img.pokemondb.net/artwork/avif/`+forMonName.toLowerCase()+`.avif">
+                                                        <h6>
+                                                        `+
+                                                        forMonName
+                                                        +` 
+                                                        </h6>
+														<p>
+                                                        `+
+                                                        forMonDescription
+                                                        +` 
+                                                        </p>
+                                                    `);
 }

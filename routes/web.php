@@ -40,17 +40,6 @@ Route::get('/getonepokemon/{pokemonName}', [MainController::class, 'pokemonSearc
 Route::get('/getpokemonnames', [PokedexController::class, 'getPokemonNames']);
 
 
-
-// Route::get('/signin', [AuthController_old::class, 'signIn']);
-// Route::get('/signincheck', [AuthController_old::class, 'signInCheck']);
-// Route::get('/login', [AuthController_old::class, 'logIn']);
-
-
-
-
-
-
-
 //about
 Route::get('/about', [AboutController::class, 'index']);
 
@@ -63,8 +52,15 @@ Route::get('/pokecard', [PokecardController::class, 'index']);
 Route::get('/pokeforum', [PokeforumController::class, 'index']);
 Route::post('/pokeforum', [PokeforumController::class, 'createThread']);
 Route::get('/pokeforum/getforumlatest', [PokeforumController::class, 'getForumLatest']);
+Route::get('/pokeforum/getforumlatestupdate', [PokeforumController::class, 'getForumLatestUpdate']);
 Route::get('/pokeforum/gettrendingtopics', [PokeforumController::class, 'getTrendingTopics']);
+Route::get('/pokeforum/getcategories', [PokeforumController::class, 'getCategories']);
+Route::get('/pokeforum/getmythreads', [PokeforumController::class, 'getMyThreads']);
 Route::get('/pokeforum/{slug}', [PokeforumController::class, 'thread']);
+Route::post('/pokeforum/{slug}', [PokeforumController::class, 'threadComment']);
+Route::post('/pokeforum/{slug}/postcommentreplies', [PokeforumController::class, 'postCommentReplies']);
+Route::get('/pokeforum/{slug}/getrepliesupdate', [PokeforumController::class, 'getRepliesUpdate']);
+Route::delete('/pokeforum/delete/thread/{id}', [PokeforumController::class, 'deleteThread']);
 
 
 
